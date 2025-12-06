@@ -6,10 +6,11 @@
         xmlns:local="clr-namespace:Transporter"
         mc:Ignorable="d"
         Title="Главное меню"
-        Width="600" Height="600"
-        MinWidth="600" MinHeight="600"
-        d:DesignWidth="600" d:DesignHeight="600"
-        FontFamily="v_DistrictTF-Regular" FontSize="16"
+        Width="980" Height="560"
+        MinWidth="980" MinHeight="560"
+        d:DesignWidth="980" d:DesignHeight="560"
+        FontSize="16"
+        FontFamily="pack://application:,,,/Fonts/#v_DistrictTF-Regular"      
         Background="#dddfe9"
         KeyDown="MainWindow_KeyDown">
     <Grid>
@@ -20,22 +21,24 @@
 
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="1.7*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
 
         <StackPanel Grid.Column="0"
-                    Margin="0,25,0,0" 
+                    Margin="25,20,0,0" 
+                    Width="210"
                     Orientation="Vertical"
-                    HorizontalAlignment="Center">
+                    HorizontalAlignment="Left">
             <TextBlock Height="20"   
                        TextAlignment="Left"
-                       Text="Файл с целевыми данными"
+                       Text="Целевыми данные"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Top"/>
 
             <local:Controller x:Name="FileFrom"
-                              Margin="0,10,0,0" 
+                              Margin="-2,5,0,0" 
                               GlobalWidth="134" FigureWidth="130"
                               Purpose="Action"
                               Command="Выбрать файл"
@@ -100,18 +103,54 @@
                                 HoverColor="#87abf4" />
         </StackPanel>
 
-        <StackPanel Grid.Column="1"
-                    Margin="0,25,0,0" 
+        <DataGrid x:Name="Grid"
+                  Grid.Row="0" Grid.Column="1"
+                  Margin="0,20,0,65"
+                  IsReadOnly="True"
+                  RowDetailsVisibilityMode="Collapsed"
+                  AutoGenerateColumns="False"
+                  MinRowHeight="22"           
+                  Background="#fff"
+                  VerticalGridLinesBrush="#1c2541"
+                  HorizontalGridLinesBrush="#1c2541"
+                  VerticalAlignment="Stretch"
+                  VirtualizingStackPanel.IsVirtualizing="False"
+                  FontSize="16"
+                  FontFamily="pack://application:,,,/Fonts/#v_DistrictTF-Regular">
+            <DataGrid.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" 
+                          Color="#568CF7"/>
+                <SolidColorBrush x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey }" 
+                          Color="#90B1F3"/>
+            </DataGrid.Resources>
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Index}" 
+                                    Header="№" 
+                                    Width="34"/>
+                <DataGridTextColumn Binding="{Binding Driver}" 
+                                    Header="Целевой" 
+                                    Width="2*"/>
+                <DataGridTextColumn Binding="{Binding Money}" 
+                                    Header="Значимый"
+                                    Width="*"/>
+            </DataGrid.Columns>
+        </DataGrid>
+
+
+        <StackPanel Grid.Column="2"
+                    Margin="0,20,25,0" 
+                    Width="210"
                     Orientation="Vertical"
-                    HorizontalAlignment="Center">
+                    HorizontalAlignment="Right">
             <TextBlock Height="20"   
                        TextAlignment="Right"
-                       Text="Файл для переноса данных"
+                       Text="Для переноса данных"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Top"/>
 
             <local:Controller x:Name="FileTo"
-                              Margin="0,10,0,0" 
+                              Margin="-2,5,0,0" 
                               GlobalWidth="134" FigureWidth="130"
                               Purpose="Action"
                               Command="Выбрать файл"
@@ -178,43 +217,42 @@
 
 
 
-        <TextBlock Name="AddSuccess" 
-                   Margin="15,0,0,0"
-                   Text="Чтение успешно"
+        <TextBlock Name="SuccessInfo" 
+                   Grid.ColumnSpan="3"
+                   Margin="0,0,0,25"
+                   Height="20"   
                    TextWrapping="Wrap"
-                   Foreground="#FF66C17E"
                    Opacity="0"               
-                   HorizontalAlignment="Left"
-                   VerticalAlignment="Bottom"/>
-
-        <TextBlock Name="AddError" 
-                   Margin="15,0,0,0"
-                   Text="Чтение с ошибкой"
-                   TextWrapping="Wrap"
-                   Foreground="#FFF96E7C"
-                   Opacity="0"                 
-                   HorizontalAlignment="Left"
+                   HorizontalAlignment="Center"
                    VerticalAlignment="Bottom"/>
 
 
+        <StackPanel Grid.Row="1" Grid.ColumnSpan="3"
+                    Margin="0,0,0,20"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Center">
+            <local:Controller x:Name="CreateDictionary"
+                              Margin="0,0,0,0"
+                              GlobalWidth="134" FigureWidth="130"
+                              Purpose="Action"                      
+                              Command="Считать файл"
+                              MouseLeftButtonDown="CreateDictionary_MouseLeftButtonDown" />
+            
+            <local:Controller x:Name="Transfer"
+                              Margin="10,0,0,0"
+                              GlobalWidth="134" FigureWidth="130"
+                              Purpose="Action"                      
+                              Command="Преобразовать"
+                              MouseLeftButtonDown="Transfer_MouseLeftButtonDown" />
+        </StackPanel>
+       
 
-        <!--Внизу-->
-        <local:Controller x:Name="Transfer"
-                          Grid.ColumnSpan="2"
-                          Margin="0,0,15,0"
-                          GlobalWidth="134" FigureWidth="130"
-                          Purpose="Action"                      
-                          Command="Преобразовать"
-                          HorizontalAlignment="Center"
-                          VerticalAlignment="Bottom"
-                          MouseLeftButtonDown="Transfer_MouseLeftButtonDown" />
-
-        <TextBlock Name="SelectedFolder"
+        <!--<TextBlock Name="SelectedFolder"
                    Grid.Row="2" 
                    Margin="25,25,0,25"
                    Text="Папка не выбрана"
                    Height="24"  
                    HorizontalAlignment="Left"
-                   TextAlignment="Left" />
+                   TextAlignment="Left" />-->
     </Grid>
 </Window>

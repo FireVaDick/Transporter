@@ -6,6 +6,14 @@ using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+
+public class DriverMoneyItem
+{
+    public string Index { get; set; }
+    public string Driver { get; set; }
+    public decimal Money { get; set; }
+}
 
 namespace Transporter
 {
@@ -80,16 +88,40 @@ namespace Transporter
                 fileInfoTb.Text = fileName;
             }
         }
+        private void CreateDictionary_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(filePathFrom) || !File.Exists(filePathFrom))
+                {
+                    ShowMessage("Пожалуйста, выберите исходный файл", false);
+                    return;
+                }
+
+                if (!AreColumnsGood()) return;
+
+                ShowMessage("Чтение исходного файла...", true);
+                driverMoneyDictionary = ReadSourceFile(filePathFrom, driverColumnFrom, moneyColumnFrom, worksheetColumnFrom);
+
+                UpdateDataGrid(driverMoneyDictionary);
+
+                ShowMessage("Словарь сформирован", true);
+            }
+            catch (Exception ex)
+            {
+                ShowMessage($"Ошибка: {ex.Message}", false);
+            }
+        }
 
         private void Transfer_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             try
             {
-                if (!AreFilesChosen()) return;
-                if (!AreColumnsGood()) return;
-
-                ShowMessage("Чтение исходного файла...", true);
-                driverMoneyDictionary = ReadSourceFile(filePathFrom, driverColumnFrom, moneyColumnFrom, worksheetColumnFrom);
+                if (string.IsNullOrEmpty(filePathTo) || !File.Exists(filePathTo))
+                {
+                    ShowMessage("Пожалуйста, выберите целевой файл", false);
+                    return;
+                }
 
                 if (driverMoneyDictionary.Count == 0)
                 {
@@ -97,7 +129,6 @@ namespace Transporter
                     return;
                 }
 
-                ShowMessage("Обновление целевого файла...", true);
                 int updatedRows = UpdateTargetFile(filePathTo, driverColumnTo, moneyColumnTo, worksheetColumnTo);
 
                 ShowMessage($"Успешно! Обновлено {updatedRows} строк. Файл сохранен.", true);
@@ -108,6 +139,33 @@ namespace Transporter
             {
                 ShowMessage($"Ошибка: {ex.Message}", false);
             }
+        }
+        #endregion
+
+
+
+        #region Обновление таблицы
+        private void UpdateDataGrid(Dictionary<string, decimal> dictionary)
+        {
+            // Создаем коллекцию элементов для DataGrid
+            var items = new List<DriverMoneyItem>();
+
+            int counter = 1;
+            foreach (var pair in dictionary)
+            {
+                items.Add(new DriverMoneyItem
+                {
+                    Index = counter.ToString(),
+                    Driver = pair.Key,
+                    Money = pair.Value
+                });
+                counter++;
+            }
+
+            // Устанавливаем источник данных для DataGrid
+            Grid.ItemsSource = items;
+
+            Grid.Items.Refresh();
         }
         #endregion
 
@@ -201,23 +259,6 @@ namespace Transporter
 
 
         #region Вспомогательные методы
-        private bool AreFilesChosen()
-        {
-            if (string.IsNullOrEmpty(filePathFrom) || !File.Exists(filePathFrom))
-            {
-                ShowMessage("Пожалуйста, выберите исходный файл", false);
-                return false;
-            }
-
-            if (string.IsNullOrEmpty(filePathTo) || !File.Exists(filePathTo))
-            {
-                ShowMessage("Пожалуйста, выберите целевой файл", false);
-                return false;
-            }
-
-            return true;
-        }
-
         private bool AreColumnsGood()
         {
             driverColumnFrom = Convert.ToInt32(DriverColumnFromTB.Text) - 1;
@@ -250,31 +291,21 @@ namespace Transporter
 
         private void ShowMessage(string message, bool isSuccess)
         {
+            SuccessInfo.Text = message;
+            SuccessInfo.Opacity = 1;
+
             if (isSuccess)
             {
-                AddSuccess.Text = message;
-                AddSuccess.Opacity = 1;
-                AddError.Opacity = 0;
+                SuccessInfo.Foreground = new SolidColorBrush(Color.FromRgb(115, 198, 78));
+
+                Animation.CreateOpacityAnimation(SuccessInfo, 10);
             }
             else
             {
-                AddError.Text = message;
-                AddError.Opacity = 1;
-                AddSuccess.Opacity = 0;
-            }
+                SuccessInfo.Foreground = new SolidColorBrush(Color.FromRgb(236, 36, 36));
 
-            // Автоматически скрываем сообщение через 5 секунд
-            var timer = new System.Windows.Threading.DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(5);
-            timer.Tick += (s, args) =>
-            {
-                if (isSuccess)
-                    AddSuccess.Opacity = 0;
-                else
-                    AddError.Opacity = 0;
-                timer.Stop();
-            };
-            timer.Start();
+                Animation.CreateInfiniteOpacityAnimation(SuccessInfo, 1);
+            }
         }
         #endregion
     }

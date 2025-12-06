@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" 
-             d:DesignWidth="120" d:DesignHeight="46"
-             Width="{Binding GlobalWidth}" Height="46"  
-             FontSize="18"
+             d:DesignWidth="180" d:DesignHeight="34"
+             Width="{Binding GlobalWidth}" Height="34"  
+             FontSize="16"
              FontFamily="pack://application:,,,/Fonts/#v_DistrictTF-Regular"
              HorizontalAlignment="Center" VerticalAlignment="Top" >
     <Grid>
@@ -22,7 +22,7 @@
               VerticalAlignment="Center">
             <TextBox Name="TB"
                      Text="{Binding Text}"
-                     Height="40" 
+                     Height="32" 
                      HorizontalAlignment="Stretch"
                      HorizontalContentAlignment="{Binding Align}"
                      VerticalContentAlignment="Center"
@@ -40,7 +40,7 @@
 
         <Grid Grid.Column="1"
               Margin="0,0,0,0"
-              Height="42"
+              Height="34"
               VerticalAlignment="Center">
             <Rectangle Name="Plus" 
                        Margin="0,1,0,0"
@@ -48,7 +48,7 @@
                        Fill="{Binding FillColor}"
                        Stroke="Black"  
                        Cursor="Hand"
-                       Width="26" Height="40"
+                       Width="32" Height="32"
                        HorizontalAlignment="Right"   
                        VerticalAlignment="Top"
                        MouseEnter="PlusMinus_MouseEnter"
@@ -56,7 +56,7 @@
                        MouseLeftButtonDown="Plus_MouseLeftButtonDown" />
 
             <TextBlock Margin="0,0,0,2"
-                       Text="+" FontSize="14" 
+                       Text="+" FontSize="16" 
                        IsHitTestVisible="False" 
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
@@ -64,7 +64,7 @@
 
         <Grid Grid.Column="2" 
               Margin="-1,0,0,0"
-              Height="42"
+              Height="34"
               VerticalAlignment="Center">
             <Rectangle Name="Minus" 
                        Margin="0,1,0,0"
@@ -72,7 +72,7 @@
                        Fill="{Binding FillColor}"
                        Stroke="Black"  
                        Cursor="Hand"
-                       Width="26" Height="40"
+                       Width="32" Height="32"
                        HorizontalAlignment="Right"   
                        VerticalAlignment="Top"
                        MouseEnter="PlusMinus_MouseEnter"
@@ -80,7 +80,7 @@
                        MouseLeftButtonDown="Minus_MouseLeftButtonDown" />
 
             <TextBlock Margin="0,0,0,2"
-                       Text="-" FontSize="20" 
+                       Text="-" FontSize="22" 
                        IsHitTestVisible="False" 
                        HorizontalAlignment="Center"
                        VerticalAlignment="Center"/>
@@ -88,7 +88,7 @@
 
         <Grid Grid.Column="3" 
               Margin="-1,0,0,0"
-              Height="42"
+              Height="34"
               VerticalAlignment="Center">
             <Rectangle Name="ClearRect" 
                        Margin="0,1,0,0"
@@ -96,7 +96,7 @@
                        Fill="{Binding FillColor}"
                        Stroke="Black"  
                        Cursor="Hand"
-                       Width="26" Height="40"
+                       Width="32" Height="32"
                        HorizontalAlignment="Right"   
                        VerticalAlignment="Top"
                        MouseEnter="PlusMinus_MouseEnter"
