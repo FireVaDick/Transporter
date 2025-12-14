@@ -32,7 +32,7 @@
                     HorizontalAlignment="Left">
             <TextBlock Height="20"   
                        TextAlignment="Left"
-                       Text="Целевыми данные"
+                       Text="Целевые данные"
                        HorizontalAlignment="Left"
                        VerticalAlignment="Top"/>
 

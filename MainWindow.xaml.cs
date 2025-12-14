@@ -187,22 +187,25 @@ namespace Transporter
 
                 for (int row = 1; row <= rowCount; row++)
                 {
-                    string driverName = worksheet.Cell(row, driverColumn).Value?.ToString()?.Trim();
+                    string originalDriverName = worksheet.Cell(row, driverColumn).Value?.ToString()?.Trim();
                     object moneyValueObj = worksheet.Cell(row, moneyColumn).Value;
                     string moneyText = moneyValueObj?.ToString()?.Trim();
 
-                    if (!string.IsNullOrEmpty(driverName) && !string.IsNullOrEmpty(moneyText))
-                    {
+                    if (!string.IsNullOrEmpty(originalDriverName) && !string.IsNullOrEmpty(moneyText))
+                    {                
+                        // Нормализуем имя перевозчика
+                        string normalizedDriverName = NormalizeDriverName(originalDriverName);
+
                         if (TryParseDecimal(moneyText, out decimal moneyValue))
                         {
-                            if (dictionary.ContainsKey(driverName))
+                            if (dictionary.ContainsKey(normalizedDriverName))
                             {
                                 // Суммируем, если перевозчик уже встречался
-                                dictionary[driverName] += moneyValue;
+                                dictionary[normalizedDriverName] += moneyValue;
                             }
                             else
                             {
-                                dictionary[driverName] = moneyValue;
+                                dictionary[normalizedDriverName] = moneyValue;
                             }
                         }
                     }
@@ -236,12 +239,19 @@ namespace Transporter
 
                 for (int row = 1; row <= rowCount; row++)
                 {
-                    string driverName = worksheet.Cell(row, driverColumn).Value?.ToString()?.Trim();
+                    string originalDriverName = worksheet.Cell(row, driverColumn).Value?.ToString()?.Trim();
 
-                    if (!string.IsNullOrEmpty(driverName) && driverMoneyDictionary.TryGetValue(driverName, out decimal moneyValue))
+                    if (!string.IsNullOrEmpty(originalDriverName))
                     {
-                        worksheet.Cell(row, moneyColumn).Value = moneyValue;
-                        updatedRows++;
+                        // Нормализуем имя для поиска в словаре
+                        string normalizedDriverName = NormalizeDriverName(originalDriverName);
+                
+                        if (!string.IsNullOrEmpty(normalizedDriverName) && 
+                            driverMoneyDictionary.TryGetValue(normalizedDriverName, out decimal moneyValue))
+                        {
+                            worksheet.Cell(row, moneyColumn).Value = moneyValue;
+                            updatedRows++;
+                        }
                     }
                 }
 
@@ -259,6 +269,18 @@ namespace Transporter
 
 
         #region Вспомогательные методы
+        private string NormalizeDriverName(string driverName)
+        {
+            if (string.IsNullOrEmpty(driverName))
+                return driverName;
+
+            // Удаляем все числовые префиксы с любыми разделителями
+            string pattern = @"^(\d+[\s:\-_]*)+";
+            string normalized = System.Text.RegularExpressions.Regex.Replace(driverName, pattern, "");
+
+            return normalized.Trim();
+        }
+
         private bool AreColumnsGood()
         {
             driverColumnFrom = Convert.ToInt32(DriverColumnFromTB.Text) - 1;
